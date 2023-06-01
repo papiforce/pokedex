@@ -32,20 +32,20 @@ const HomePage = () => {
   const [pokemons, setPokemons] = useState([]);
 
   const POKEMON_PER_PAGE = 10;
-  const TOTAL_POKEMON = 1281;
+  // const TOTAL_POKEMON = 1281;
 
-  const handlePageChange = (action) => {
-    if (
-      action === "next" &&
-      page.current <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
-    ) {
-      return getPokemons(page.next, action);
-    }
+  // const handlePageChange = (action) => {
+  //   if (
+  //     action === "next" &&
+  //     page.current <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
+  //   ) {
+  //     return getPokemons(page.next, action);
+  //   }
 
-    if (action === "prev" && page.current > 1) {
-      return getPokemons(page.prev, action);
-    }
-  };
+  //   if (action === "prev" && page.current > 1) {
+  //     return getPokemons(page.prev, action);
+  //   }
+  // };
 
   const getPokemons = async (url, action) => {
     try {
