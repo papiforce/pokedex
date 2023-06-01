@@ -28,6 +28,7 @@ const CardImage = styled.img`
   `}
   width: 100%;
   padding: 12px;
+  height: 100%;
   max-height: 210px;
   border: 3px solid grey !important;
 `;
@@ -81,13 +82,13 @@ const Card = ({ id, name, img, health, types, abilities }) => {
         })}
       </TagsWrapper>
 
-      {abilities.map((ability, index) => {
+      {abilities.slice(0, 2).map((ability, index) => {
         return (
           <Text
             key={index}
             fontSize="font14"
             fontWeight={500}
-            color="orange"
+            color="black"
             textAlign="center"
             style={{ marginBottom: index < abilities.length - 1 ? 4 : 0 }}
           >

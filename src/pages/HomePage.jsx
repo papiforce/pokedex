@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -23,43 +23,46 @@ const PokemonsWrapper = styled.div`
 `;
 
 const HomePage = () => {
+  const urlPage = new URLSearchParams(useLocation().search).get("page");
   const navigate = useNavigate();
   const [page, setPage] = useState({
     prev: null,
-    current: 1,
+    current: urlPage ?? 1,
     next: null,
   });
   const [pokemons, setPokemons] = useState([]);
 
   const POKEMON_PER_PAGE = 10;
-  // const TOTAL_POKEMON = 1281;
+  const TOTAL_POKEMON = 1281;
 
-  // const handlePageChange = (action) => {
-  //   if (
-  //     action === "next" &&
-  //     page.current <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
-  //   ) {
-  //     return getPokemons(page.next, action);
-  //   }
+  const handlePageChange = (action) => {
+    if (
+      action === "next" &&
+      page.current <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
+    ) {
+      return getPokemons(page.next, action);
+    }
 
-  //   if (action === "prev" && page.current > 1) {
-  //     return getPokemons(page.prev, action);
-  //   }
-  // };
+    if (action === "prev" && page.current > 1) {
+      return getPokemons(page.prev, action);
+    }
+  };
 
   const getPokemons = async (url, action) => {
     try {
       const { data } = await axios.get(url);
 
+      const current =
+        action === "next"
+          ? page.current + 1
+          : action === "prev"
+          ? page.current - 1
+          : 1;
+
       setPage({
         ...page,
         prev: data.previous,
-        current:
-          action === "next"
-            ? page.current + 1
-            : action === "prev"
-            ? page.current - 1
-            : 1,
+        current: current,
         next: data.next,
       });
 
@@ -81,12 +84,14 @@ const HomePage = () => {
       });
       const results = await Promise.all(promises);
       setPokemons(results);
+      navigate(`/?page=${current}`);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
+    setPokemons([]);
     getPokemons(
       `https://pokeapi.co/api/v2/pokemon?offset=${page.current - 1}&limit=${
         page.current * POKEMON_PER_PAGE
@@ -95,12 +100,6 @@ const HomePage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    navigate(`/?page=${page.current}`);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page.current]);
 
   return (
     <Layout>
@@ -121,7 +120,7 @@ const HomePage = () => {
             })}
         </PokemonsWrapper>
       </Container>
-      {/* <p
+      <p
         onClick={() => handlePageChange("prev")}
         style={{ textAlign: "center", marginBottom: 24 }}
       >
@@ -151,7 +150,7 @@ const HomePage = () => {
         style={{ textAlign: "center", marginTop: 24 }}
       >
         NEXT
-      </p> */}
+      </p>
     </Layout>
   );
 };
