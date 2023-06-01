@@ -1,8 +1,26 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import axios from "axios";
 
 import Layout from "./Layout";
+
+import Title from "components/Title";
+import Card from "components/Card";
+
+const Container = styled.div`
+  ${({ theme: { screens } }) => `
+    max-width: ${screens.maxDesktop}px;
+  `}
+  margin: 32px auto 0;
+`;
+
+const PokemonsWrapper = styled.div`
+  display: flex;
+  gap: 56px 24px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -86,7 +104,24 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <p
+      <Container>
+        <Title
+          fontSize="from56to32"
+          fontWeight={400}
+          textAlign="center"
+          style={{ marginBottom: 24 }}
+        >
+          Liste des Pokemons
+        </Title>
+
+        <PokemonsWrapper>
+          {pokemons.length > 0 &&
+            pokemons.map((pokemon) => {
+              return <Card {...pokemon} />;
+            })}
+        </PokemonsWrapper>
+      </Container>
+      {/* <p
         onClick={() => handlePageChange("prev")}
         style={{ textAlign: "center", marginBottom: 24 }}
       >
@@ -116,7 +151,7 @@ const HomePage = () => {
         style={{ textAlign: "center", marginTop: 24 }}
       >
         NEXT
-      </p>
+      </p> */}
     </Layout>
   );
 };
