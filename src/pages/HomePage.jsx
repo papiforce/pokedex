@@ -7,6 +7,7 @@ import Layout from "./Layout";
 
 import Title from "components/Title";
 import Card from "components/Card";
+import Text from "components/Text";
 
 const Container = styled.div`
   ${({ theme: { screens } }) => `
@@ -20,6 +21,27 @@ const PokemonsWrapper = styled.div`
   gap: 56px 24px;
   flex-wrap: wrap;
   justify-content: space-around;
+  margin-bottom: 80px;
+`;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  max-width: max-content;
+  margin: 0 auto;
+`;
+
+const PaginationBtn = styled(Text)`
+  ${({ theme: { colors } }) => `
+    :hover {
+      background: ${colors.white30};
+    }
+  `}
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 8px;
+  border-radius: 4px;
 `;
 
 const HomePage = () => {
@@ -27,11 +49,13 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState({
     prev: null,
-    current: urlPage ?? 1,
+    current: urlPage,
     next: null,
   });
   const [pokemons, setPokemons] = useState([]);
+  const [pokedex, setPokedex] = useState([]);
 
+  const POKEDEX = localStorage.getItem("pokedex");
   const POKEMON_PER_PAGE = 10;
   const TOTAL_POKEMON = 1281;
 
@@ -40,11 +64,31 @@ const HomePage = () => {
       action === "next" &&
       page.current <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
     ) {
-      return getPokemons(page.next, action);
+      getPokemons(page.next, action);
+      return navigate(`/?page=${page.current + 1}`);
     }
 
     if (action === "prev" && page.current > 1) {
-      return getPokemons(page.prev, action);
+      getPokemons(page.prev, action);
+      return navigate(`/?page=${page.current - 1}`);
+    }
+  };
+
+  const isInPokedex = (id) => {
+    return pokedex.some((pokemon) => pokemon.id === id);
+  };
+
+  const handleClick = (pokemon) => {
+    if (!isInPokedex(pokemon.id)) {
+      setPokedex([...pokedex, pokemon]);
+      return localStorage.setItem(
+        "pokedex",
+        JSON.stringify([...pokedex, pokemon])
+      );
+    } else {
+      const updatedPokedex = pokedex.filter((poke) => poke.id !== pokemon.id);
+      setPokedex(updatedPokedex);
+      return localStorage.setItem("pokedex", JSON.stringify(updatedPokedex));
     }
   };
 
@@ -69,6 +113,7 @@ const HomePage = () => {
       const promises = await data.results.map(async (pokemon) => {
         const result = await fetch(pokemon.url);
         const res = await result.json();
+        // console.log(res);
         const formattedRes = {
           id: res.id,
           name: res.name,
@@ -84,7 +129,6 @@ const HomePage = () => {
       });
       const results = await Promise.all(promises);
       setPokemons(results);
-      navigate(`/?page=${current}`);
     } catch (err) {
       console.log(err);
     }
@@ -93,15 +137,29 @@ const HomePage = () => {
 
 
   useEffect(() => {
-    setPokemons([]);
+    setPage({ ...page, current: urlPage });
+
     getPokemons(
-      `https://pokeapi.co/api/v2/pokemon?offset=${page.current - 1}&limit=${
-        page.current * POKEMON_PER_PAGE
-      }`
+      `https://pokeapi.co/api/v2/pokemon?offset=${urlPage}&limit=${POKEMON_PER_PAGE}`
     );
+
+    if (POKEDEX) {
+      setPokedex(JSON.parse(POKEDEX));
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pokemons]);
+
+  if (!page.current) return <></>;
 
   return (
     <Layout>
@@ -117,42 +175,50 @@ const HomePage = () => {
 
         <PokemonsWrapper>
           {pokemons.length > 0 &&
-            pokemons.map((pokemon) => {
-              return <Card {...pokemon} />;
+            pokemons.map((pokemon, idx) => {
+              return (
+                <Card
+                  key={idx}
+                  id={pokemon.id}
+                  name={pokemon.name}
+                  img={pokemon.img}
+                  health={pokemon.health}
+                  types={pokemon.types}
+                  abilities={pokemon.abilities}
+                  isInPokedex={isInPokedex(pokemon.id)}
+                  onClick={() => handleClick(pokemon)}
+                />
+              );
             })}
         </PokemonsWrapper>
+
+        <PaginationWrapper>
+          <PaginationBtn
+            fontSize="font16"
+            fontWeight={400}
+            onClick={() => handlePageChange("prev")}
+          >
+            Précédent
+          </PaginationBtn>
+
+          <Text fontSize="font16" fontWeight={500}>
+            {urlPage * POKEMON_PER_PAGE === 0 ? 1 : urlPage * POKEMON_PER_PAGE}{" "}
+            à{" "}
+            {urlPage * POKEMON_PER_PAGE > TOTAL_POKEMON
+              ? TOTAL_POKEMON
+              : urlPage * POKEMON_PER_PAGE + POKEMON_PER_PAGE}{" "}
+            sur {TOTAL_POKEMON}
+          </Text>
+
+          <PaginationBtn
+            fontSize="font16"
+            fontWeight={400}
+            onClick={() => handlePageChange("next")}
+          >
+            Suivant
+          </PaginationBtn>
+        </PaginationWrapper>
       </Container>
-      <p
-        onClick={() => handlePageChange("prev")}
-        style={{ textAlign: "center", marginBottom: 24 }}
-      >
-        PREV
-      </p>
-
-      <p
-        onClick={() => {
-          if (page.current * POKEMON_PER_PAGE > TOTAL_POKEMON) return;
-
-          return setPage({ ...page, current: (page.current += 1) });
-        }}
-        style={{ textAlign: "center" }}
-      >
-        {(page.current - 1) * POKEMON_PER_PAGE === 0
-          ? 1
-          : (page.current - 1) * POKEMON_PER_PAGE}{" "}
-        à{" "}
-        {page.current * POKEMON_PER_PAGE > TOTAL_POKEMON
-          ? TOTAL_POKEMON
-          : page.current * POKEMON_PER_PAGE}{" "}
-        sur {TOTAL_POKEMON}
-      </p>
-
-      <p
-        onClick={() => handlePageChange("next")}
-        style={{ textAlign: "center", marginTop: 24 }}
-      >
-        NEXT
-      </p>
     </Layout>
   );
 };

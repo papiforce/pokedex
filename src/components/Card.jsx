@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 
 import Title from "./Title";
@@ -71,9 +70,33 @@ const WrapperImage = styled.div`
 position: relative;
 `
 
+const FakeBtn = styled(Text)`
+  ${({ theme: { colors } }) => `
+    background: ${colors.black};
+    border: 2px solid ${colors.white30};
 
-const Card = ({ id, name, img, health, types, abilities }) => {
+    :hover {
+      border: 2px solid ${colors.white};
+    }
+  `}
+  max-width: max-content;
+  padding: 4px 8px;
+  margin: 8px auto 0px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+`;
 
+const Card = ({
+  id,
+  name,
+  img,
+  health,
+  types,
+  abilities,
+  isInPokedex,
+  onClick,
+}) => {
   const renderSwitch = (types) => {
     switch (types) {
       case 'grass':
@@ -119,8 +142,6 @@ const Card = ({ id, name, img, health, types, abilities }) => {
     }
   }
 
-
-
   return (
     <CardContainer type={types[0]}>
 
@@ -144,9 +165,7 @@ const Card = ({ id, name, img, health, types, abilities }) => {
         <TagsWrapper>
           {types.map((type, index) => {
             return (
-
               <ImgTypes key={index} src={renderSwitch(type)} alt={type} />
-
             );
           })}
         </TagsWrapper>
@@ -188,6 +207,10 @@ const Card = ({ id, name, img, health, types, abilities }) => {
           </>
         );
       })}
+
+      <FakeBtn fontSize="font14" textAlign="center" onClick={onClick}>
+        {isInPokedex ? "Retirer" : "Ajouter"}
+      </FakeBtn>
     </CardContainer>
   );
 };

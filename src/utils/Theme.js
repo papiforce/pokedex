@@ -18,7 +18,6 @@ const Theme = {
     yellow: "#FFA500",
     yellowBis: "rgb(255, 225, 101)",
     red: "#8B0000",
-    transparent: "transparent",
     normal: "rgb(156, 156, 99)",
     orange: "rgb(162, 70, 30)",
     fire: "rgb(240, 128, 48)",
