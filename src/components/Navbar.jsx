@@ -60,12 +60,12 @@ const Navbar = () => {
   return (
     <Container>
       <Wrapper>
-        <Link to="/">
+        <Link to="/?page=1">
           <Text fontSize="font32">Pokedex</Text>
         </Link>
 
         <RightWrapper>
-          <Link to="/">
+          <Link to="/?page=1">
             <CustomLinkText>Liste</CustomLinkText>
           </Link>
 
