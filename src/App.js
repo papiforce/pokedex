@@ -6,6 +6,7 @@ import Theme from "utils/Theme";
 import HomePage from "pages/HomePage";
 import PokedexPage from "pages/PokedexPage";
 
+
 const App = () => {
   return (
     <ThemeProvider theme={Theme}>

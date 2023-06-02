@@ -90,6 +90,8 @@ const HomePage = () => {
     }
   };
 
+
+
   useEffect(() => {
     setPokemons([]);
     getPokemons(
