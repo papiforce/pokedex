@@ -133,7 +133,19 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    setPage({ ...page, current: urlPage });
+    setPage({
+      ...page,
+      current:
+        Number(urlPage) < 1 ||
+        Number(urlPage) * POKEMON_PER_PAGE > TOTAL_POKEMON
+          ? 1
+          : urlPage,
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
 
     getPokemons(
       `https://pokeapi.co/api/v2/pokemon?offset=${
@@ -147,15 +159,6 @@ const HomePage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlPage]);
-
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pokemons]);
 
   if (!page.current) return <></>;
 
