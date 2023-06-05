@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-import useWindowSize from "utils/useWindowSize";
 import Layout from "./Layout";
 
 import Rock from "../assets/types/Rock.png";
@@ -87,7 +86,6 @@ const FakeBtn = styled(Text)`
 const PokemonPage = () => {
   const { name, id } = useParams();
   const navigate = useNavigate();
-  const { isTablet } = useWindowSize();
 
   const [pokemon, setPokemon] = useState([]);
   const [PokeEvo, setPokeEvo] = useState([]);
@@ -244,8 +242,6 @@ const PokemonPage = () => {
   }, [id]);
 
   if (pokemon.length < 1) return <></>;
-
-  console.log(isTablet);
 
   return (
     <Layout

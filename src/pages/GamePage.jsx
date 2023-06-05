@@ -109,8 +109,6 @@ const GamePage = () => {
       const results = await Promise.all(promises);
       localStorage.setItem("poke-pack", JSON.stringify(results));
       setPack(results);
-
-      console.log(results);
     } catch (err) {
       console.log(err);
     }
