@@ -51,6 +51,7 @@ const PokedexPage = () => {
   const [pokedex, setPokedex] = useState([]);
   const [pokemons, setPokemons] = useState([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const TOTAL_POKEMON = 1281;
   const POKEDEX = localStorage.getItem("pokedex");
@@ -78,14 +79,21 @@ const PokedexPage = () => {
   };
 
   const getPokemons = async () => {
+    setIsLoading(true);
     try {
       const { data } = await axios.get(
         `https://pokeapi.co/api/v2/pokemon?limit=${TOTAL_POKEMON}`
       );
 
       const promises = await data.results.map(async (pokemon) => {
-        const result = await fetch(pokemon.url);
-        const res = await result.json();
+        const result = await fetch(pokemon.url)
+          .then((res) => {
+            if (res.ok) {
+              return res.json();
+            }
+          })
+          .catch((err) => console.log("FETCH", err));
+        const res = await result;
         const formattedRes = {
           id: res.id,
           name: res.name,
@@ -111,6 +119,7 @@ const PokedexPage = () => {
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -121,6 +130,26 @@ const PokedexPage = () => {
     getPokemons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (isLoading)
+    return (
+      <Layout title="Mon Pokedex" style={{ padding: "70px 16px" }}>
+        <Title
+          fontSize="from56to32"
+          fontWeight={400}
+          textAlign="center"
+          style={{ marginBottom: 24 }}
+        >
+          Mon Pokédex
+        </Title>
+
+        <Text fontSize="font18" fontWeight={400} textAlign="center">
+          Chargement..
+        </Text>
+      </Layout>
+    );
+
+  console.log(pokemons);
 
   return (
     <Layout title="Mon Pokedex" style={{ padding: "70px 16px" }}>

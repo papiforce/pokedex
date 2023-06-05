@@ -135,11 +135,7 @@ const HomePage = () => {
   useEffect(() => {
     setPage({
       ...page,
-      current:
-        Number(urlPage) < 1 ||
-        Number(urlPage) * POKEMON_PER_PAGE > TOTAL_POKEMON
-          ? 1
-          : urlPage,
+      current: urlPage,
     });
 
     window.scrollTo({
