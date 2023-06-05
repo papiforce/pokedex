@@ -44,18 +44,6 @@ const PaginationBtn = styled(Text)`
   border-radius: 4px;
 `;
 
-const FakeBtn = styled(Text)`
-  ${({ theme: { colors } }) => `
-    background: ${colors.purple};
-  `}
-  max-width: max-content;
-  padding: 4px 8px;
-  margin: 8px auto 32px;
-  border-radius: 4px;
-  cursor: pointer;
-  user-select: none;
-`;
-
 const HomePage = () => {
   const urlPage = Number(new URLSearchParams(useLocation().search).get("page"));
   const navigate = useNavigate();
@@ -66,6 +54,7 @@ const HomePage = () => {
   });
   const [pokemons, setPokemons] = useState([]);
   const [pokedex, setPokedex] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const POKEDEX = localStorage.getItem("pokedex");
   const POKEMON_PER_PAGE = 10;
@@ -105,6 +94,7 @@ const HomePage = () => {
   };
 
   const getPokemons = async (url, action) => {
+    setIsLoading(true);
     try {
       const { data } = await axios.get(url);
 
@@ -139,6 +129,7 @@ const HomePage = () => {
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -155,7 +146,7 @@ const HomePage = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [urlPage]);
 
   useEffect(() => {
     window.scrollTo({
@@ -180,37 +171,35 @@ const HomePage = () => {
           Liste des Pokemons
         </Title>
 
-        <FakeBtn
-          fontSize="font18"
-          fontWeight={400}
-          onClick={() => navigate("/game?tab=pack")}
-        >
-          Jouer
-        </FakeBtn>
-
-        <PokemonsWrapper>
-          {pokemons.length > 0 &&
-            pokemons.map((pokemon, idx) => {
-              return (
-                <Card
-                  key={idx}
-                  id={pokemon.id}
-                  name={pokemon.name}
-                  img={pokemon.img}
-                  health={pokemon.health}
-                  types={pokemon.types}
-                  abilities={pokemon.abilities}
-                  isInPokedex={isInPokedex(pokemon.id)}
-                  onClick={() => handleClick(pokemon)}
-                  onSelectedPokemon={() =>
-                    navigate(
-                      `/pokemon/${pokemon.name.toLowerCase()}/${pokemon.id}`
-                    )
-                  }
-                />
-              );
-            })}
-        </PokemonsWrapper>
+        {!isLoading ? (
+          <PokemonsWrapper>
+            {pokemons.length > 0 &&
+              pokemons.map((pokemon, idx) => {
+                return (
+                  <Card
+                    key={idx}
+                    id={pokemon.id}
+                    name={pokemon.name}
+                    img={pokemon.img}
+                    health={pokemon.health}
+                    types={pokemon.types}
+                    abilities={pokemon.abilities}
+                    isInPokedex={isInPokedex(pokemon.id)}
+                    onClick={() => handleClick(pokemon)}
+                    onSelectedPokemon={() =>
+                      navigate(
+                        `/pokemon/${pokemon.name.toLowerCase()}/${pokemon.id}`
+                      )
+                    }
+                  />
+                );
+              })}
+          </PokemonsWrapper>
+        ) : (
+          <Text fontSize="font18" fontWeight={400} textAlign="center">
+            Chargement..
+          </Text>
+        )}
 
         <PaginationWrapper>
           <PaginationBtn

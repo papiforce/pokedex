@@ -29,8 +29,8 @@ const PokemonsWrapper = styled.div`
 `;
 
 const FakeBtn = styled(Text)`
-  ${({ theme: { colors } }) => `
-    background: ${colors.black};
+  ${({ theme: { colors }, bgColor }) => `
+    background: ${colors[bgColor]};
     border: 2px solid ${colors.white30};
 
     :hover {
@@ -155,6 +155,15 @@ const PokedexPage = () => {
           style={{ margin: "0 auto 24px", padding: "0 16px" }}
         />
 
+        <FakeBtn
+          fontSize="font18"
+          fontWeight={400}
+          bgColor="purple"
+          onClick={() => navigate("/game?tab=pack")}
+        >
+          Jouer
+        </FakeBtn>
+
         <Divider width="60%" margin="32px auto 56px" />
 
         <PokemonsWrapper>
@@ -188,6 +197,7 @@ const PokedexPage = () => {
           <FakeBtn
             fontSize="font18"
             fontWeight={400}
+            bgColor="black"
             onClick={() => {
               localStorage.setItem("pokedex", JSON.stringify([]));
               setPokedex([]);
