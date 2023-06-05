@@ -5,11 +5,11 @@ export default function useWindowSize() {
     height: window.innerHeight,
     width: window.innerWidth,
     isSmallMobile: window.innerWidth <= 375,
-    isMobile: window.innerWidth > 375 && window.innerWidth <= 480,
-    isTablet: window.innerWidth > 480 && window.innerWidth <= 768,
-    isSmallDesktop: window.innerWidth > 768 && window.innerWidth <= 1024,
-    isDesktop: window.innerWidth > 1024 && window.innerWidth <= 1280,
-    isMaxDesktop: window.innerWidth > 1280 && window.innerWidth <= 1440,
+    isMobile: window.innerWidth <= 480,
+    isTablet: window.innerWidth <= 768,
+    isSmallDesktop: window.innerWidth <= 1024,
+    isDesktop: window.innerWidth <= 1280,
+    isMaxDesktop: window.innerWidth <= 1440,
   });
 
   useEffect(() => {

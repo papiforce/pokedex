@@ -98,6 +98,8 @@ const HomePage = () => {
     try {
       const { data } = await axios.get(url);
 
+      console.log(url);
+
       const current =
         action === "next" ? urlPage + 1 : action === "prev" ? urlPage - 1 : 1;
 
@@ -133,19 +135,11 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    setPage({
-      ...page,
-      current: urlPage,
-    });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    setPage({ ...page, current: urlPage });
 
     getPokemons(
       `https://pokeapi.co/api/v2/pokemon?offset=${
-        urlPage <= 1 ? 0 : urlPage
+        Number(urlPage) === 1 ? 0 : Number(urlPage) * POKEMON_PER_PAGE
       }&limit=${POKEMON_PER_PAGE}`
     );
 
@@ -155,6 +149,15 @@ const HomePage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlPage]);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pokemons]);
 
   if (!page.current) return <></>;
 
