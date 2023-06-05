@@ -89,6 +89,9 @@ const DropdownWrapper = styled.div`
   top: calc(100% + 8px);
   padding: 16px;
   border-radius: 16px;
+  z-index: 2;
+  max-height: 500px;
+  overflow-y: scroll;
 `;
 
 const DropdownItem = styled(Text)`
@@ -98,10 +101,17 @@ const DropdownItem = styled(Text)`
 			color: ${colors.white} !important;
 		}
 	`}
-
+  display: flex;
+  align-items: center;
+  gap: 12px;
   border-radius: 8px;
   padding: 16px;
   cursor: pointer;
+`;
+
+const DropdownIcon = styled.img`
+  width: 40px;
+  height: 40px;
 `;
 
 const Input = ({
@@ -117,6 +127,7 @@ const Input = ({
   value,
   withDropdown = false,
   dropdownItems,
+  onClick,
   isError = false,
   isLoading = false,
   errorMessage,
@@ -184,7 +195,7 @@ const Input = ({
                     <div
                       key={idx}
                       onClick={() => {
-                        if (item.onClick) item.onClick();
+                        if (onClick) onClick(item);
                         setIsFocus(false);
                       }}
                     >
@@ -194,6 +205,7 @@ const Input = ({
                         color={isMobile ? "white" : "white30"}
                         isEllipsis
                       >
+                        <DropdownIcon src={item.img} alt={item.name} />
                         {item.name}
                       </DropdownItem>
                     </div>

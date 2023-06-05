@@ -45,7 +45,7 @@ const PaginationBtn = styled(Text)`
 `;
 
 const HomePage = () => {
-  const urlPage = new URLSearchParams(useLocation().search).get("page");
+  const urlPage = Number(new URLSearchParams(useLocation().search).get("page"));
   const navigate = useNavigate();
   const [page, setPage] = useState({
     prev: null,
@@ -62,15 +62,15 @@ const HomePage = () => {
   const handlePageChange = (action) => {
     if (
       action === "next" &&
-      page.current <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
+      urlPage <= Math.ceil(TOTAL_POKEMON / POKEMON_PER_PAGE)
     ) {
       getPokemons(page.next, action);
-      return navigate(`/?page=${page.current + 1}`);
+      return navigate(`/?page=${urlPage + 1}`);
     }
 
-    if (action === "prev" && page.current > 1) {
+    if (action === "prev" && urlPage > 1) {
       getPokemons(page.prev, action);
-      return navigate(`/?page=${page.current - 1}`);
+      return navigate(`/?page=${urlPage - 1}`);
     }
   };
 
@@ -97,11 +97,7 @@ const HomePage = () => {
       const { data } = await axios.get(url);
 
       const current =
-        action === "next"
-          ? page.current + 1
-          : action === "prev"
-          ? page.current - 1
-          : 1;
+        action === "next" ? urlPage + 1 : action === "prev" ? urlPage - 1 : 1;
 
       setPage({
         ...page,
@@ -113,7 +109,6 @@ const HomePage = () => {
       const promises = await data.results.map(async (pokemon) => {
         const result = await fetch(pokemon.url);
         const res = await result.json();
-        // console.log(res);
         const formattedRes = {
           id: res.id,
           name: res.name,
@@ -134,13 +129,13 @@ const HomePage = () => {
     }
   };
 
-
-
   useEffect(() => {
     setPage({ ...page, current: urlPage });
 
     getPokemons(
-      `https://pokeapi.co/api/v2/pokemon?offset=${urlPage}&limit=${POKEMON_PER_PAGE}`
+      `https://pokeapi.co/api/v2/pokemon?offset=${
+        urlPage <= 1 ? 0 : urlPage
+      }&limit=${POKEMON_PER_PAGE}`
     );
 
     if (POKEDEX) {
@@ -187,6 +182,11 @@ const HomePage = () => {
                   abilities={pokemon.abilities}
                   isInPokedex={isInPokedex(pokemon.id)}
                   onClick={() => handleClick(pokemon)}
+                  onSelectedPokemon={() =>
+                    navigate(
+                      `/pokemon/${pokemon.name.toLowerCase()}/${pokemon.id}`
+                    )
+                  }
                 />
               );
             })}

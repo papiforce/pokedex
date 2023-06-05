@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   width: 100%;
   margin: 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
 `;
@@ -61,14 +61,10 @@ const Navbar = () => {
     <Container>
       <Wrapper>
         <Link to="/?page=1">
-          <Text fontSize="font32">Pokedex</Text>
+          <Text fontSize="font32">Pokecard</Text>
         </Link>
 
         <RightWrapper>
-          <Link to="/?page=1">
-            <CustomLinkText>Liste</CustomLinkText>
-          </Link>
-
           <Link to="/pokedex">
             <CustomLinkText
               isActive={window.location.href.includes(
@@ -78,7 +74,7 @@ const Navbar = () => {
                   .replace(/[\u0300-\u036f]/g, "")
               )}
             >
-              Pokedex
+              Mon Pokedex
             </CustomLinkText>
           </Link>
         </RightWrapper>
