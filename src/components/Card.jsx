@@ -1,10 +1,6 @@
 import styled from "styled-components";
 
-import Title from "./Title";
-import Text from "./Text";
-
 import NotFound from "assets/images/404-page-not-found.png";
-
 import Rock from "../assets/types/Rock.png";
 import Fire from "../assets/types/Fire.png";
 import Bug from "../assets/types/Rock.png";
@@ -23,6 +19,9 @@ import Poison from "../assets/types/Poison.png";
 import Psychic from "../assets/types/Psychic.png";
 import Steel from "../assets/types/Steel.png";
 import Water from "../assets/types/Water.png";
+
+import Title from "./Title";
+import Text from "./Text";
 
 const CardContainer = styled.div`
   ${({ theme: { colors }, type }) => `
@@ -100,7 +99,7 @@ const Card = ({
   onSelectedPokemon,
   style,
 }) => {
-  const renderSwitch = (types) => {
+  const renderTypes = (types) => {
     switch (types) {
       case "grass":
         return Grass;
@@ -164,7 +163,7 @@ const Card = ({
         <CardImage src={img ? img : NotFound} alt={name} />
         <TagsWrapper>
           {types.map((type, index) => {
-            return <ImgTypes key={index} src={renderSwitch(type)} alt={type} />;
+            return <ImgTypes key={index} src={renderTypes(type)} alt={type} />;
           })}
         </TagsWrapper>
       </WrapperImage>
