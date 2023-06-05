@@ -10,7 +10,7 @@ const Container = styled.main`
 `;
 
 const Layout = ({
-  title = "Pokedex",
+  title = "Pokécard",
   description = "Site web Pokedex like",
   children,
   style,

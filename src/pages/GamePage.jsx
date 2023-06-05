@@ -230,13 +230,16 @@ const GamePage = () => {
               Farmer
             </FakeBtn>
 
-            {credits >= 15 && pack && pack.length < 1 && (
+            {credits >= 15 && ((pack && pack.length < 1) || pack === null) && (
               <FakeBtn
                 fontSize="font18"
                 fontWeight={400}
                 bgColor="purple"
                 onClick={() => {
-                  if (!isLoading && pack && pack.length < 1) {
+                  if (
+                    !isLoading &&
+                    ((pack && pack.length < 1) || pack === null)
+                  ) {
                     localStorage.setItem(
                       "poke-credits",
                       JSON.stringify(Number((credits - 15).toFixed(2)))
