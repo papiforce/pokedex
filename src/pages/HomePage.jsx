@@ -172,61 +172,65 @@ const HomePage = () => {
         </Title>
 
         {!isLoading ? (
-          <PokemonsWrapper>
-            {pokemons.length > 0 &&
-              pokemons.map((pokemon, idx) => {
-                return (
-                  <Card
-                    key={idx}
-                    id={pokemon.id}
-                    name={pokemon.name}
-                    img={pokemon.img}
-                    health={pokemon.health}
-                    types={pokemon.types}
-                    abilities={pokemon.abilities}
-                    isInPokedex={isInPokedex(pokemon.id)}
-                    onClick={() => handleClick(pokemon)}
-                    onSelectedPokemon={() =>
-                      navigate(
-                        `/pokemon/${pokemon.name.toLowerCase()}/${pokemon.id}`
-                      )
-                    }
-                  />
-                );
-              })}
-          </PokemonsWrapper>
+          <>
+            <PokemonsWrapper>
+              {pokemons.length > 0 &&
+                pokemons.map((pokemon, idx) => {
+                  return (
+                    <Card
+                      key={idx}
+                      id={pokemon.id}
+                      name={pokemon.name}
+                      img={pokemon.img}
+                      health={pokemon.health}
+                      types={pokemon.types}
+                      abilities={pokemon.abilities}
+                      isInPokedex={isInPokedex(pokemon.id)}
+                      onClick={() => handleClick(pokemon)}
+                      onSelectedPokemon={() =>
+                        navigate(
+                          `/pokemon/${pokemon.name.toLowerCase()}/${pokemon.id}`
+                        )
+                      }
+                    />
+                  );
+                })}
+            </PokemonsWrapper>
+
+            <PaginationWrapper>
+              <PaginationBtn
+                fontSize="font16"
+                fontWeight={400}
+                onClick={() => handlePageChange("prev")}
+              >
+                Précédent
+              </PaginationBtn>
+
+              <Text fontSize="font16" fontWeight={500}>
+                {urlPage * POKEMON_PER_PAGE === 0
+                  ? 1
+                  : urlPage * POKEMON_PER_PAGE}{" "}
+                à{" "}
+                {urlPage * POKEMON_PER_PAGE > TOTAL_POKEMON
+                  ? TOTAL_POKEMON
+                  : urlPage * POKEMON_PER_PAGE + POKEMON_PER_PAGE}{" "}
+                sur {TOTAL_POKEMON}
+              </Text>
+
+              <PaginationBtn
+                fontSize="font16"
+                fontWeight={400}
+                onClick={() => handlePageChange("next")}
+              >
+                Suivant
+              </PaginationBtn>
+            </PaginationWrapper>
+          </>
         ) : (
           <Text fontSize="font18" fontWeight={400} textAlign="center">
             Chargement..
           </Text>
         )}
-
-        <PaginationWrapper>
-          <PaginationBtn
-            fontSize="font16"
-            fontWeight={400}
-            onClick={() => handlePageChange("prev")}
-          >
-            Précédent
-          </PaginationBtn>
-
-          <Text fontSize="font16" fontWeight={500}>
-            {urlPage * POKEMON_PER_PAGE === 0 ? 1 : urlPage * POKEMON_PER_PAGE}{" "}
-            à{" "}
-            {urlPage * POKEMON_PER_PAGE > TOTAL_POKEMON
-              ? TOTAL_POKEMON
-              : urlPage * POKEMON_PER_PAGE + POKEMON_PER_PAGE}{" "}
-            sur {TOTAL_POKEMON}
-          </Text>
-
-          <PaginationBtn
-            fontSize="font16"
-            fontWeight={400}
-            onClick={() => handlePageChange("next")}
-          >
-            Suivant
-          </PaginationBtn>
-        </PaginationWrapper>
       </Container>
     </Layout>
   );

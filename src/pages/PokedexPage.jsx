@@ -123,7 +123,7 @@ const PokedexPage = () => {
   }, []);
 
   return (
-    <Layout title="Mon Pokedex">
+    <Layout title="Mon Pokedex" style={{ padding: "70px 16px" }}>
       <Title
         fontSize="from56to32"
         fontWeight={400}
@@ -140,7 +140,7 @@ const PokedexPage = () => {
           width="500px"
           value={search}
           onChange={handleChange}
-          withDropdown={!pokemons ? false : true}
+          withDropdown
           dropdownItems={
             pokemons
               ? pokemons.filter((pokemon) =>
@@ -152,7 +152,7 @@ const PokedexPage = () => {
             handleClick(pokemon);
             setSearch("");
           }}
-          style={{ margin: "0 auto 24px", padding: "0 16px" }}
+          style={{ margin: "0 auto 24px" }}
         />
 
         <FakeBtn

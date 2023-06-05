@@ -7,6 +7,7 @@ import HomePage from "pages/HomePage";
 import PokedexPage from "pages/PokedexPage";
 import PokemonPage from "pages/PokemonPage";
 import GamePage from "pages/GamePage";
+import NotFoundPage from "pages/NotFoundPage";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route exact path="/pokedex" element={<PokedexPage />} />
           <Route exact path="/pokemon/:name/:id" element={<PokemonPage />} />
           <Route exact path="/game" element={<GamePage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
