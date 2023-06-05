@@ -49,7 +49,7 @@ const PokedexPage = () => {
   const navigate = useNavigate();
 
   const [pokedex, setPokedex] = useState([]);
-  const [pokemons, setPokemons] = useState(null);
+  const [pokemons, setPokemons] = useState([]);
   const [search, setSearch] = useState("");
 
   const TOTAL_POKEMON = 1281;
@@ -136,18 +136,16 @@ const PokedexPage = () => {
       <Container>
         <Input
           label="Ajouter un pokémon"
-          placeholder="Nom du pokémon"
+          placeholder="Nom du pokémon ou son ID"
           width="500px"
           value={search}
           onChange={handleChange}
           withDropdown
-          dropdownItems={
-            pokemons
-              ? pokemons.filter((pokemon) =>
-                  pokemon.name.toLowerCase().includes(search.toLowerCase())
-                )
-              : []
-          }
+          dropdownItems={pokemons.filter(
+            (pokemon) =>
+              pokemon.name.toLowerCase().includes(search.toLowerCase()) ||
+              pokemon.id === Number(search)
+          )}
           onClick={(pokemon) => {
             handleClick(pokemon);
             setSearch("");

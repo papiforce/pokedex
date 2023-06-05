@@ -188,31 +188,51 @@ const Input = ({
                 </Text>
               </DropdownWrapper>
             )}
-            {isFocus && value !== "" && !isLoading && (
-              <DropdownWrapper>
-                {dropdownItems.map((item, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      onClick={() => {
-                        if (onClick) onClick(item);
-                        setIsFocus(false);
-                      }}
-                    >
-                      <DropdownItem
-                        fontSize="font18"
-                        fontWeight={400}
-                        color={isMobile ? "white" : "white30"}
-                        isEllipsis
+            {isFocus &&
+              value !== "" &&
+              !isLoading &&
+              dropdownItems &&
+              dropdownItems.length > 0 && (
+                <DropdownWrapper>
+                  {dropdownItems.map((item, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => {
+                          if (onClick) onClick(item);
+                          setIsFocus(false);
+                        }}
                       >
-                        <DropdownIcon src={item.img} alt={item.name} />
-                        {item.name}
-                      </DropdownItem>
-                    </div>
-                  );
-                })}
-              </DropdownWrapper>
-            )}
+                        <DropdownItem
+                          fontSize="font18"
+                          fontWeight={400}
+                          color={isMobile ? "white" : "white30"}
+                          isEllipsis
+                        >
+                          <DropdownIcon src={item.img} alt={item.name} />
+                          {item.name}
+                        </DropdownItem>
+                      </div>
+                    );
+                  })}
+                </DropdownWrapper>
+              )}
+            {isFocus &&
+              value !== "" &&
+              !isLoading &&
+              dropdownItems &&
+              dropdownItems.length < 1 && (
+                <DropdownWrapper>
+                  <Text
+                    fontSize="font16"
+                    fontWeight={400}
+                    textAlign="center"
+                    color={isMobile ? "white" : "white30"}
+                  >
+                    Aucun élément ne correspond..
+                  </Text>
+                </DropdownWrapper>
+              )}
           </>
         )}
       </OutsideClick>
