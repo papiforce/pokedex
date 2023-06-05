@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Title from "./Title";
 import Text from "./Text";
 
+import NotFound from "assets/images/404-page-not-found.png";
+
 import Rock from "../assets/types/Rock.png";
 import Fire from "../assets/types/Fire.png";
 import Bug from "../assets/types/Rock.png";
@@ -159,7 +161,7 @@ const Card = ({
       </CardTitle>
 
       <WrapperImage>
-        <CardImage src={img} alt={name} />
+        <CardImage src={img ? img : NotFound} alt={name} />
         <TagsWrapper>
           {types.map((type, index) => {
             return <ImgTypes key={index} src={renderSwitch(type)} alt={type} />;

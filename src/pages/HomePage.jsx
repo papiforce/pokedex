@@ -44,6 +44,18 @@ const PaginationBtn = styled(Text)`
   border-radius: 4px;
 `;
 
+const FakeBtn = styled(Text)`
+  ${({ theme: { colors } }) => `
+    background: ${colors.purple};
+  `}
+  max-width: max-content;
+  padding: 4px 8px;
+  margin: 8px auto 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+`;
+
 const HomePage = () => {
   const urlPage = Number(new URLSearchParams(useLocation().search).get("page"));
   const navigate = useNavigate();
@@ -167,6 +179,14 @@ const HomePage = () => {
         >
           Liste des Pokemons
         </Title>
+
+        <FakeBtn
+          fontSize="font18"
+          fontWeight={400}
+          onClick={() => navigate("/game?tab=pack")}
+        >
+          Jouer
+        </FakeBtn>
 
         <PokemonsWrapper>
           {pokemons.length > 0 &&

@@ -28,6 +28,23 @@ const PokemonsWrapper = styled.div`
   margin-bottom: 80px;
 `;
 
+const FakeBtn = styled(Text)`
+  ${({ theme: { colors } }) => `
+    background: ${colors.black};
+    border: 2px solid ${colors.white30};
+
+    :hover {
+      border: 2px solid ${colors.white};
+    }
+  `}
+  max-width: max-content;
+  padding: 4px 16px;
+  margin: 24px auto 0px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+`;
+
 const PokedexPage = () => {
   const navigate = useNavigate();
 
@@ -35,6 +52,7 @@ const PokedexPage = () => {
   const [pokemons, setPokemons] = useState(null);
   const [search, setSearch] = useState("");
 
+  const TOTAL_POKEMON = 1281;
   const POKEDEX = localStorage.getItem("pokedex");
 
   const isInPokedex = (id) => {
@@ -62,7 +80,7 @@ const PokedexPage = () => {
   const getPokemons = async () => {
     try {
       const { data } = await axios.get(
-        "https://pokeapi.co/api/v2/pokemon/?limit=1281"
+        `https://pokeapi.co/api/v2/pokemon?limit=${TOTAL_POKEMON}`
       );
 
       const promises = await data.results.map(async (pokemon) => {
@@ -87,6 +105,7 @@ const PokedexPage = () => {
 
         return formattedRes;
       });
+
       const results = await Promise.all(promises);
       setPokemons(results);
     } catch (err) {
@@ -103,24 +122,6 @@ const PokedexPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!pokemons)
-    return (
-      <Layout title="Mon Pokedex">
-        <Title
-          fontSize="from56to32"
-          fontWeight={400}
-          textAlign="center"
-          style={{ marginBottom: 24 }}
-        >
-          Mon Pokedex
-        </Title>
-
-        <Container>
-          <Text textAlign="center">Chargement en cours..</Text>
-        </Container>
-      </Layout>
-    );
-
   return (
     <Layout title="Mon Pokedex">
       <Title
@@ -129,25 +130,29 @@ const PokedexPage = () => {
         textAlign="center"
         style={{ marginBottom: 24 }}
       >
-        Mon Pokedex
+        Mon Pokédex
       </Title>
 
       <Container>
         <Input
-          label="Ajouter un pokemon"
-          placeholder="Nom du pokemon"
+          label="Ajouter un pokémon"
+          placeholder="Nom du pokémon"
           width="500px"
           value={search}
           onChange={handleChange}
-          withDropdown
-          dropdownItems={pokemons.filter((pokemon) =>
-            pokemon.name.toLowerCase().includes(search.toLowerCase())
-          )}
+          withDropdown={!pokemons ? false : true}
+          dropdownItems={
+            pokemons
+              ? pokemons.filter((pokemon) =>
+                  pokemon.name.toLowerCase().includes(search.toLowerCase())
+                )
+              : []
+          }
           onClick={(pokemon) => {
             handleClick(pokemon);
             setSearch("");
           }}
-          style={{ margin: "0 auto", padding: "0 16px" }}
+          style={{ margin: "0 auto 24px", padding: "0 16px" }}
         />
 
         <Divider width="60%" margin="32px auto 56px" />
@@ -175,9 +180,22 @@ const PokedexPage = () => {
               );
             })
           ) : (
-            <Text>Il n'y a aucun pokemon dans votre pokedex</Text>
+            <Text>Il n'y a aucun pokémon dans votre pokédex</Text>
           )}
         </PokemonsWrapper>
+
+        {pokedex.length > 0 && (
+          <FakeBtn
+            fontSize="font18"
+            fontWeight={400}
+            onClick={() => {
+              localStorage.setItem("pokedex", JSON.stringify([]));
+              setPokedex([]);
+            }}
+          >
+            Vider le pokedex
+          </FakeBtn>
+        )}
       </Container>
     </Layout>
   );

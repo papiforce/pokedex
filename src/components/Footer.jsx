@@ -17,7 +17,7 @@ const Footer = () => {
   return (
     <Container>
       <Text fontSize="font14" textAlign="center">
-        Pokedex © {new Date().getFullYear()}, tous droits réservés
+        Pokécard © {new Date().getFullYear()}, tous droits réservés
       </Text>
     </Container>
   );

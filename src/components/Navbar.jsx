@@ -61,7 +61,7 @@ const Navbar = () => {
     <Container>
       <Wrapper>
         <Link to="/?page=1">
-          <Text fontSize="font32">Pokecard</Text>
+          <Text fontSize="font32">Pokécard</Text>
         </Link>
 
         <RightWrapper>
@@ -74,7 +74,7 @@ const Navbar = () => {
                   .replace(/[\u0300-\u036f]/g, "")
               )}
             >
-              Mon Pokedex
+              Mon Pokédex
             </CustomLinkText>
           </Link>
         </RightWrapper>
