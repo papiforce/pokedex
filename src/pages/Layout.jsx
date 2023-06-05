@@ -13,6 +13,7 @@ const Layout = ({
   title = "Pokedex",
   description = "Site web Pokedex like",
   children,
+  style,
 }) => {
   const goToTop = () => {
     window.scrollTo({
@@ -33,7 +34,7 @@ const Layout = ({
   return (
     <>
       <Navbar />
-      <Container>{children}</Container>
+      <Container style={style}>{children}</Container>
       <Footer />
     </>
   );

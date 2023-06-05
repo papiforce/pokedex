@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
+import useWindowSize from "utils/useWindowSize";
 import Layout from "./Layout";
 
 import Rock from "../assets/types/Rock.png";
@@ -84,13 +85,15 @@ const FakeBtn = styled(Text)`
 `;
 
 const PokemonPage = () => {
-  const { id } = useParams();
+  const { name, id } = useParams();
   const navigate = useNavigate();
+  const { isTablet } = useWindowSize();
 
   const [pokemon, setPokemon] = useState([]);
   const [PokeEvo, setPokeEvo] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [pokedex, setPokedex] = useState([]);
+  const [hasEvolution, setHasEvolution] = useState(false);
 
   const POKEDEX = localStorage.getItem("pokedex");
 
@@ -158,25 +161,36 @@ const PokemonPage = () => {
   const getEvolutions = async (id) => {
     try {
       const { data } = await axios.get(
-        `https://pokeapi.co/api/v2/evolution-chain/${id}`
+        `https://pokeapi.co/api/v2/pokemon-species/${id}`
       );
 
-      const result = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${data.chain.evolves_to[0].species.name}`
-      );
+      const result = await fetch(data.evolution_chain.url);
       const res = await result.json();
 
+      const evoName =
+        res.chain.evolves_to[0].species.name === name
+          ? res.chain.evolves_to[0].evolves_to[0].species.name
+          : res.chain.evolves_to[0].species.name;
+
+      const evoResult = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${evoName}`
+      );
+      const evoRes = await evoResult.json();
+
       const formattedRes = {
-        id: res.id,
-        name: res.name,
-        abilities: res.abilities.map((ability) => ability.ability.name),
-        img: res.sprites.other.dream_world.front_default,
-        types: res.types.map((type) => type.type.name),
-        weight: res.weight,
-        health: res.stats.filter((stat) => stat.stat.name === "hp")[0]
+        id: evoRes.id,
+        name: evoRes.name,
+        abilities: evoRes.abilities.map((ability) => ability.ability.name),
+        img: evoRes.sprites.other.dream_world.front_default,
+        types: evoRes.types.map((type) => type.type.name),
+        weight: evoRes.weight,
+        health: evoRes.stats.filter((stat) => stat.stat.name === "hp")[0]
           .base_stat,
       };
 
+      setHasEvolution(
+        !(name === res.chain.evolves_to[0].evolves_to[0].species.name)
+      );
       setPokeEvo(formattedRes);
     } catch (err) {
       console.log(err);
@@ -231,11 +245,14 @@ const PokemonPage = () => {
 
   if (pokemon.length < 1) return <></>;
 
+  console.log(isTablet);
+
   return (
     <Layout
       title={`${
         pokemon.name[0].toUpperCase() + pokemon.name.slice(1)
       } | Pokedex`}
+      style={{ padding: "70px 16px 0" }}
     >
       <Title
         fontSize="from56to32"
@@ -315,14 +332,16 @@ const PokemonPage = () => {
         </Text>
       </Container>
 
-      <FakeBtn
-        fontSize="font18"
-        fontWeight={400}
-        bgColor="purple"
-        onClick={() => setIsOpen((isOpen) => !isOpen)}
-      >
-        {isOpen ? "Cacher l'évolution" : "Voir l'évolution"}
-      </FakeBtn>
+      {hasEvolution && (
+        <FakeBtn
+          fontSize="font18"
+          fontWeight={400}
+          bgColor="purple"
+          onClick={() => setIsOpen((isOpen) => !isOpen)}
+        >
+          {isOpen ? "Cacher l'évolution" : "Voir l'évolution"}
+        </FakeBtn>
+      )}
 
       {isOpen && (
         <Card
